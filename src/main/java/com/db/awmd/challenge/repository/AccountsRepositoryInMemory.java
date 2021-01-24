@@ -1,13 +1,12 @@
 package com.db.awmd.challenge.repository;
 
 import com.db.awmd.challenge.domain.Account;
-import com.db.awmd.challenge.exception.AmountTransferException;
+import com.db.awmd.challenge.exception.AccountNotFoundException;
 import com.db.awmd.challenge.exception.DuplicateAccountIdException;
+import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class AccountsRepositoryInMemory implements AccountsRepository {
@@ -25,7 +24,11 @@ public class AccountsRepositoryInMemory implements AccountsRepository {
 
   @Override
   public Account getAccount(String accountId) {
-    return accounts.get(accountId); 
+    Account account = accounts.get(accountId);
+    if (account == null) {
+      throw new AccountNotFoundException(accountId);
+    }
+    return account;
   }
 
   @Override

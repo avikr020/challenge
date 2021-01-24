@@ -1,13 +1,15 @@
 package com.db.awmd.challenge.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.math.BigDecimal;
+import lombok.Data;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
+import java.math.BigDecimal;
+import java.util.concurrent.Semaphore;
 
 @Data
 public class Account {
@@ -19,6 +21,8 @@ public class Account {
   @NotNull
   @Min(value = 0, message = "Initial balance must be positive.")
   private BigDecimal balance;
+  @JsonIgnore
+  private final Semaphore semaphore = new Semaphore(1); // binary semaphore for acquiring lock on account
 
   public Account(String accountId) {
     this.accountId = accountId;
